@@ -1,7 +1,6 @@
 services:
   - type: web
-    name: discord-otp-bot
+    name: discord-bot
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn -w 1 -b 0.0.0.0:5000 bot:app
-    autoDeploy: true
+    startCommand: gunicorn -w 1 -b 0.0.0.0:5000 main:app
