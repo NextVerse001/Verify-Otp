@@ -12,7 +12,6 @@ CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
 # 🎯 ตั้งค่า Bot
 intents = discord.Intents.default()
-intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # 🧾 ฟอร์มกรอกข้อมูล Email & Password
