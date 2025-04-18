@@ -1,9 +1,10 @@
-# 🚀 DISCORD BOT: รับ OTP จาก ROCKSTAR ด้วย EMAIL & PASSWORD
 import os
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 from otp_fetcher import fetch_otp_with_credentials
+from flask import Flask
+from threading import Thread
 
 # 🔐 โหลดค่า ENV
 load_dotenv()
@@ -58,7 +59,7 @@ async def on_ready():
     # 💬 Embed + Button
     embed = discord.Embed(
         title="🎟️ CODE FROM ROCKSTAR SUPPORT",
-        description=(
+        description=( 
             "```📌 ระบบรับรหัส OTP 6 หลักจาก Rockstar\n"
             "📧 กดปุ่มเพื่อกรอกอีเมลและรหัสผ่านของคุณ\n"
             "🔢 รับรหัส OTP ทันทีภายในไม่กี่วินาที\n"
@@ -76,4 +77,25 @@ async def on_ready():
     await channel.send(embed=embed, view=LoginButton())
 
 # 🧠 เริ่มรัน Bot
-bot.run(TOKEN)
+def run_bot():
+    bot.run(TOKEN)
+
+# 🔥 Start Flask app to keep the bot running
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+# Function to start Flask app in a separate thread
+def run_flask():
+    app.run(host='0.0.0.0', port=5000)
+
+# Run both Flask and Discord bot
+if __name__ == "__main__":
+    # Start the Flask app in a separate thread to keep the bot alive
+    flask_thread = Thread(target=run_flask)
+    flask_thread.start()
+
+    # Start the Discord bot
+    run_bot()

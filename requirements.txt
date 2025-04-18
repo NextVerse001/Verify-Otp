@@ -2,3 +2,5 @@ discord.py
 python-dotenv
 imapclient
 beautifulsoup4
+flask
+gunicorn
