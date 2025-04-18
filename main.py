@@ -63,6 +63,7 @@ async def on_ready():
             ),
             color=0x0e89ff
         )
+        embed.set_image(url="https://i.pinimg.com/originals/00/44/0a/00440aa746a76f99c8990800a91926c1.gif")
         await channel.send(embed=embed, view=LoginButton())
 
 # --- RUN BOTH ---
